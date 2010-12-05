@@ -22,11 +22,22 @@ class Client {
 	} // function __construct
 	
 	public function message($message) {
-		socket_write($this->socket, $message."\033[0m\n\r");
+		try {
+			socket_write($this->socket, $message."\033[0m\n\r");
+		}
+		catch (SocketException $e) {
+			$this->disconnect();
+		}
 	} // function message
 	
 	public function handleInput() {
-		$input = trim(socket_read($this->socket, 1024));
+		try {
+			$input = trim(socket_read($this->socket, 1024));
+		}
+		catch (SocketException $e) {
+			$this->disconnect();
+			return;
+		}
 
 		if (self::State_Logged_In != $this->state) {
 			$this->handleLogin($input);

@@ -6,10 +6,15 @@ include './config.php';
 if (DEBUG) {
 	error_reporting(-1);
 	set_error_handler(function($no,$str,$f,$l) {
+		// Handle socket exceptions differently
+		if (strstr($str, 'socket_'))
+			throw new SocketException;
+			
 		print_r(func_get_args());
 		throw new ErrorException($str,0,$no,$f,$l);
 	}, -1);
 }
+
 
 include './app/Action.php';
 include './app/Client.php';
@@ -35,3 +40,4 @@ class ClientDisconnectException extends Exception {
 		return $this->getMessage();
 	} // function __toString
 }
+class SocketException extends Exception {}
