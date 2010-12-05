@@ -57,6 +57,10 @@ class Server {
 		}
 	} // function run
 	
+	public static function getClients() {
+		return self::$clients;
+	} // function getClients
+	
 	public static function messageAll($message) {
 		foreach (self::$clients as $client) {
 			$client->message($message);

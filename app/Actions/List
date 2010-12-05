@@ -1,8 +1,10 @@
 <?
 include './app/Actions/shutdown.php';
 include './app/Actions/quit.php';
+include './app/Actions/who.php';
 
 return array(
+	'who',
 	'shutdow',
 	'shutdown',
 	'quit',
