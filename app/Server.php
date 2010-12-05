@@ -32,6 +32,7 @@ class Server {
 	 * The main program loop
 	**/
 	private static function run() {
+		Actions::register();
 		$w = $e = null;
 		while (self::$run) {
 			$sockets = self::getSockets();

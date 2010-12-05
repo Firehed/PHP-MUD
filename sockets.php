@@ -14,7 +14,7 @@ set_error_handler(function($no,$str,$f,$l) {
 	throw new ErrorException($str,0,$no,$f,$l);
 }, -1);
 
-include './app/Action.php';
+include './app/Actions.php';
 include './app/Client.php';
 include './app/Database.php';
 include './app/Server.php';

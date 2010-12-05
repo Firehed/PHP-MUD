@@ -44,7 +44,7 @@ class Client {
 			return;
 		}
 		
-		Action::perform($this, $input);
+		Actions::perform($this, $input);
 		
 	} // function handleInput
 	

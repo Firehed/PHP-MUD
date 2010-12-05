@@ -1,0 +1,10 @@
+<?
+include './app/Actions/shutdown.php';
+include './app/Actions/quit.php';
+
+return array(
+	'shutdow',
+	'shutdown',
+	'quit',
+
+);
