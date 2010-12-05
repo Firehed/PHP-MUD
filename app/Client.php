@@ -11,6 +11,7 @@ class Client {
 	private $socket;
 	private $position;
 	private $state;
+	private $messageSent = false;
 	public $user;
 	
 	public function __construct($socket) {
@@ -27,7 +28,9 @@ class Client {
 			return;
 
 		try {
-			socket_write($this->socket, $message."\033[0m\n\r");
+			$sol = $this->messageSent ? "\n\r" : '';
+			socket_write($this->socket, "$sol$message\033[0m");
+			$this->messageSent = true;
 		}
 		catch (SocketException $e) {
 			$this->disconnect();
@@ -39,6 +42,7 @@ class Client {
 	} // function prompt
 	
 	public function handleInput() {
+		$this->messageSent = false;
 		try {
 			$input = trim(socket_read($this->socket, 1024));
 		}
