@@ -70,7 +70,7 @@ class Server {
 	private static function getSockets() {
 		$sockets[0] = self::$app;
 		foreach (self::$clients as $client) {
-			$sockets[$client->getPosition()] = $client->getSocket();
+			$sockets[$client->position] = $client->socket;
 		}
 		return $sockets;
 	} // function getSockets
@@ -78,12 +78,12 @@ class Server {
 	private static function addClient($socket) {
 		if ($new = socket_accept(self::$app)) {
 			$c = new Client($new);
-			self::$clients[$c->getPosition()] = $c;
+			self::$clients[$c->position] = $c;
 		}
 	} // function addClient
 	
 	public static function removeClient(Client $c) {
-		unset(self::$clients[$c->getPosition()]);
+		unset(self::$clients[$c->position]);
 	} // function removeClient
 	
 } // class Server

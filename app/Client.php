@@ -6,23 +6,30 @@ class Client {
 	const State_Logged_In     = 3; // Logged in
 	const State_Registering   = 4; // In the registration process
 	const State_Disconnecting = 5;
-	
-	private static $count = 0;
-	private $socket;
-	private $position;
-	private $state;
-	private $messageSent = false;
-	public $user;
-	
+
+	private static $count = 0; // Number of connected clients
+
+	private $messageSent = false; // Whether anything has been sent to the client in this loop
+	private $position;            // Position in server's client array
+	private $socket;              // Socket resource
+	private $state;               // Client state
+	private $user;                // User object associated with client
+
 	public function __construct($socket) {
 		$this->socket = $socket;
 		$this->position = ++self::$count;
 		$this->state = self::State_New;
-		
+
 		$this->message(COLOR_DK_BLUE . "Welcome to the club!");
 		$this->message('Username:');
 	} // function __construct
-	
+
+	public function __get($key) {
+		if (isset($this->$key))
+			return $this->$key;
+		throw new Exception("Invalid property $key in Client object.");
+	} // function __get
+
 	public function message($message) {
 		if ($this->state == self::State_Disconnecting)
 			return;
@@ -36,11 +43,11 @@ class Client {
 			$this->disconnect();
 		}
 	} // function message
-	
+
 	public function prompt() {
 		$this->message("{$this->user->name}'s prompt --->");
 	} // function prompt
-	
+
 	public function handleInput() {
 		$this->messageSent = false;
 		try {
@@ -55,11 +62,11 @@ class Client {
 			$this->handleLogin($input);
 			return;
 		}
-		
+
 		Actions::perform($this, $input);
 		$this->prompt();
 	} // function handleInput
-	
+
 	public function handleLogin($input) {
 		switch ($this->state) {
 			case self::State_New:
@@ -74,13 +81,13 @@ class Client {
 					$this->message("Welcome, {$this->user->name}. Please set a password.");
 				}
 			return;
-			
+
 			case self::State_Registering:
 				$this->user->register($input);
 				$this->message('Thanks for registering. You\'re in.');
 				$this->state = self::State_Logged_In;
 			return;
-			
+
 			case self::State_Login:
 				if ($this->user->login($input)) {
 					$this->message('Login successful!');
@@ -91,28 +98,20 @@ class Client {
 					$this->message('Invalid password. Try again.');
 				}
 			return;
-			
+
 		}
-		
+
 	} // function handleLogin
-	
-	public function getSocket() {
-		return $this->socket;
-	} // function getSocket
-	
-	public function getPosition() {
-		return $this->position;
-	} // function getPosition
-	
+
 	public function quit() {
 		$this->message(COLOR_DK_RED . " ** DISCONNECTING **");
 		$this->disconnect();
 	} // function quit
-	
+
 	public function disconnect() {
 		$this->state = self::State_Disconnecting;
 		socket_close($this->socket);
 		Server::removeClient($this);
 	} // function disconnect
-	
+
 } // class Client
