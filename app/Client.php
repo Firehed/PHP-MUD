@@ -30,23 +30,11 @@ class Client {
 		throw new Exception("Invalid property $key in Client object.");
 	} // function __get
 
-	public function message($message) {
-		if ($this->state == self::State_Disconnecting)
-			return;
-
-		try {
-			$sol = $this->messageSent ? "\n\r" : '';
-			socket_write($this->socket, $sol . $message . COLOR_RESET . ' ');
-			$this->messageSent = true;
-		}
-		catch (SocketException $e) {
-			$this->disconnect();
-		}
-	} // function message
-
-	public function prompt() {
-		$this->message("{$this->user->name}'s prompt --->");
-	} // function prompt
+	public function disconnect() {
+		$this->state = self::State_Disconnecting;
+		socket_close($this->socket);
+		Server::removeClient($this);
+	} // function disconnect
 
 	public function handleInput() {
 		$this->messageSent = false;
@@ -103,15 +91,27 @@ class Client {
 
 	} // function handleLogin
 
+	public function message($message) {
+		if ($this->state == self::State_Disconnecting)
+			return;
+
+		try {
+			$sol = $this->messageSent ? "\n\r" : '';
+			socket_write($this->socket, $sol . $message . COLOR_RESET . ' ');
+			$this->messageSent = true;
+		}
+		catch (SocketException $e) {
+			$this->disconnect();
+		}
+	} // function message
+
+	public function prompt() {
+		$this->message("{$this->user->name}'s prompt --->");
+	} // function prompt
+
 	public function quit() {
 		$this->message(COLOR_DK_RED . " ** DISCONNECTING **");
 		$this->disconnect();
 	} // function quit
-
-	public function disconnect() {
-		$this->state = self::State_Disconnecting;
-		socket_close($this->socket);
-		Server::removeClient($this);
-	} // function disconnect
 
 } // class Client

@@ -1,6 +1,5 @@
 <?php
 
-
 define('COLOR_RESET',      "\033[0m");    // Reset
 define('COLOR_DK_BLACK',   "\033[0;30m"); // Black
 define('COLOR_DK_RED',     "\033[0;31m"); // Red
