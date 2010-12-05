@@ -2,6 +2,15 @@
 <?php
 set_time_limit(0);
 include './config.php';
+
+if (DEBUG) {
+	error_reporting(-1);
+	set_error_handler(function($no,$str,$f,$l) {
+		print_r(func_get_args());
+		throw new ErrorException($str,0,$no,$f,$l);
+	}, -1);
+}
+
 include './app/Action.php';
 include './app/Client.php';
 include './app/Database.php';
