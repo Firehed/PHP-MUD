@@ -34,6 +34,10 @@ class Client {
 		}
 	} // function message
 	
+	public function prompt() {
+		$this->message("{$this->user->name}'s prompt --->");
+	} // function prompt
+	
 	public function handleInput() {
 		try {
 			$input = trim(socket_read($this->socket, 1024));
@@ -49,7 +53,7 @@ class Client {
 		}
 		
 		Actions::perform($this, $input);
-		
+		$this->prompt();
 	} // function handleInput
 	
 	public function handleLogin($input) {
@@ -77,6 +81,7 @@ class Client {
 				if ($this->user->login($input)) {
 					$this->message('Login successful!');
 					$this->state = self::State_Logged_In;
+					$this->prompt();
 				}
 				else {
 					$this->message('Invalid password. Try again.');
