@@ -26,7 +26,7 @@ Server::start($address, $port);
 
 
 
-class ClientDisconnectException extends Exception {
+class DisconnectClientException extends Exception {
 	public function __toString() {
 		return $this->getMessage();
 	} // function __toString

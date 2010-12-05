@@ -50,7 +50,7 @@ class Server {
 						try {
 							$client->handleInput();
 						}
-						catch (ClientDisconnectException $e) {
+						catch (DisconnectClientException $e) {
 							$client->message($e);
 							$client->disconnect();
 						}

@@ -85,7 +85,7 @@ class Client {
 				}
 				else {
 					if (++$this->failedLoginAttempts >= 3)
-						throw new ClientDisconnectException('Too many failed login attempts.');
+						throw new DisconnectClientException('Too many failed login attempts.');
 					$this->message('Invalid password. Try again.');
 				}
 			return;
