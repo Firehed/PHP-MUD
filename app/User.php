@@ -6,7 +6,6 @@ class User {
 
 	private $changed = FALSE;         // Have any properties changed?
 	private $data;                    // Generic key/value store for data
-	private $failedLoginAttempts = 0; // Failed login attempts on this connection
 
 	public function __construct($username) {
 		self::$db === NULL && self::$db = Database::instance(); // Init DB
@@ -38,13 +37,7 @@ class User {
 	} // function __set
 
 	public function login($password) {
-		if (sha1($password.SALT) === $this->password)
-			return true;
-
-		if (++$this->failedLoginAttempts >= 3)
-			throw new ClientDisconnectException('EPIC LOGIN FAIL');
-
-		return false;
+		return sha1($password.SALT) === $this->password;
 	} // function login
 
 	public function register($password) {

@@ -9,11 +9,12 @@ class Client {
 
 	private static $count = 0; // Number of connected clients
 
-	private $messageSent = false; // Whether anything has been sent to the client in this loop
-	private $position;            // Position in server's client array
-	private $socket;              // Socket resource
-	private $state;               // Client state
-	private $user;                // User object associated with client
+	private $failedLoginAttempts = 0; // Failed login attempts on this connection
+	private $messageSent = false;     // Whether anything has been sent to the client in this loop
+	private $position;                // Position in server's client array
+	private $socket;                  // Socket resource
+	private $state;                   // Client state
+	private $user;                    // User object associated with client
 
 	public function __construct($socket) {
 		$this->socket = $socket;
@@ -83,6 +84,8 @@ class Client {
 					$this->prompt();
 				}
 				else {
+					if (++$this->failedLoginAttempts >= 3)
+						throw new ClientDisconnectException('Too many failed login attempts.');
 					$this->message('Invalid password. Try again.');
 				}
 			return;
