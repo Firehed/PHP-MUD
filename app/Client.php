@@ -1,10 +1,11 @@
 <?php
 
 class Client {
-	const State_New         = 1; // Just connected
-	const State_Login       = 2; // Needs to enter password
-	const State_Logged_In   = 3; // Logged in
-	const State_Registering = 4; // In the registration process
+	const State_New           = 1; // Just connected
+	const State_Login         = 2; // Needs to enter password
+	const State_Logged_In     = 3; // Logged in
+	const State_Registering   = 4; // In the registration process
+	const State_Disconnecting = 5;
 	
 	private static $count = 0;
 	private $socket;
@@ -22,6 +23,9 @@ class Client {
 	} // function __construct
 	
 	public function message($message) {
+		if ($this->state == self::State_Disconnecting)
+			return;
+
 		try {
 			socket_write($this->socket, $message."\033[0m\n\r");
 		}
@@ -97,6 +101,7 @@ class Client {
 	} // function quit
 	
 	public function disconnect() {
+		$this->state = self::State_Disconnecting;
 		socket_close($this->socket);
 		Server::removeClient($this);
 	} // function disconnect
