@@ -21,7 +21,7 @@ class Client {
 		$this->position = ++self::$count;
 		$this->state = self::State_New;
 
-		$this->message(COLOR_DK_BLUE . "Welcome to the club!");
+		$this->message('{bWelcome to the club!');
 		$this->message('Username:');
 	} // function __construct
 
@@ -113,7 +113,7 @@ class Client {
 	} // function prompt
 
 	public function quit() {
-		$this->message(COLOR_DK_RED . " ** DISCONNECTING **");
+		$this->message('{r** DISCONNECTING **');
 		$this->disconnect();
 	} // function quit
 
