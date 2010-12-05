@@ -12,7 +12,7 @@ class shutdow implements Action {
 
 class shutdown implements Action {
 	public static function ok(Client $client) {
-		return $client->user->name == 'Firehed';
+		return true;
 	}
 
 	public static function run(Client $client, $arg) {
