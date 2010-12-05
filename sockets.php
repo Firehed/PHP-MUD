@@ -1,12 +1,12 @@
 #!/usr/bin/php
 <?php
 set_time_limit(0);
-include 'config.php';
-include 'app/Action.php';
-include 'app/Client.php';
-include 'app/Database.php';
-include 'app/Server.php';
-include 'app/User.php';
+include './config.php';
+include './app/Action.php';
+include './app/Client.php';
+include './app/Database.php';
+include './app/Server.php';
+include './app/User.php';
 
 Server::start($address, $port);
 
