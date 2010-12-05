@@ -32,9 +32,10 @@ class Server {
 	 * The main program loop
 	**/
 	private static function run() {
+		$w = $e = null;
 		while (self::$run) {
 			$sockets = self::getSockets();
-			if (socket_select($sockets, $w = NULL, $e = NULL, NULL) > 0) {
+			if (socket_select($sockets, $w, $e, NULL) > 0) {
 				foreach ($sockets as $position => $socket) {
 					if ($socket == self::$app) {
 						self::addClient($socket);
