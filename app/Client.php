@@ -19,7 +19,7 @@ class Client {
 		$this->position = ++self::$count;
 		$this->state = self::State_New;
 		
-		$this->message("\033[34mWelcome to the club!");
+		$this->message(COLOR_DK_BLUE . "Welcome to the club!");
 		$this->message('Username:');
 	} // function __construct
 	
@@ -29,7 +29,7 @@ class Client {
 
 		try {
 			$sol = $this->messageSent ? "\n\r" : '';
-			socket_write($this->socket, "$sol$message\033[0m");
+			socket_write($this->socket, $sol . $message . COLOR_RESET . ' ');
 			$this->messageSent = true;
 		}
 		catch (SocketException $e) {
@@ -105,7 +105,7 @@ class Client {
 	} // function getPosition
 	
 	public function quit() {
-		$this->message("\033[31m ** DISCONNECTING **");
+		$this->message(COLOR_DK_RED . " ** DISCONNECTING **");
 		$this->disconnect();
 	} // function quit
 	

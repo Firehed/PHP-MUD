@@ -19,7 +19,7 @@ class Server {
 	} // function start
 	
 	public static function stop() {
-		self::messageAll("\033[32m*** The server is shutting down now. *** \033[0m");
+		self::messageAll(COLOR_DK_GREEN . "*** The server is shutting down now. ***");
 		foreach (self::$clients as $client) {
 			$client->disconnect();
 		}
