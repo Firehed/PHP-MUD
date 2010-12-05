@@ -2,8 +2,10 @@
 include './app/Actions/shutdown.php';
 include './app/Actions/quit.php';
 include './app/Actions/who.php';
+include './app/Actions/score.php';
 
 return array(
+	'score',
 	'who',
 	'shutdow',
 	'shutdown',
