@@ -80,8 +80,12 @@ class Client {
 		return $this->position;
 	} // function getPosition
 	
-	public function disconnect() {
+	public function quit() {
 		$this->message("\033[31m ** DISCONNECTING **");
+		$this->disconnect();
+	} // function quit
+	
+	public function disconnect() {
 		socket_close($this->socket);
 		Server::removeClient($this);
 	} // function disconnect

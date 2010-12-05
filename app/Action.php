@@ -6,8 +6,8 @@ class Action {
 		if ($input == 'shutdown') {
 			Server::stop();
 		}
-		elseif ($input == 'exit') {
-			$client->disconnect();
+		elseif ($input == 'quit') {
+			$client->quit();
 		}
 		elseif ($input == 'mem') {
 			$client->message(memory_get_usage());
