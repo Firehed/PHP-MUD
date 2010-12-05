@@ -5,12 +5,12 @@ error_reporting(-1);
 
 include './config.php';
 set_error_handler(function($no,$str,$f,$l) {
+	if (DEBUG)
+		print_r(func_get_args());
 	// Handle socket exceptions differently
 	if (strstr($str, 'socket_'))
 		throw new SocketException;
 
-	if (DEBUG)
-		print_r(func_get_args());
 	throw new ErrorException($str,0,$no,$f,$l);
 }, -1);
 
