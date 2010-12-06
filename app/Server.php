@@ -40,7 +40,7 @@ class Server {
 		$write = $except = null;
 		while (self::$run) {
 			$sockets = self::getSockets();
-			if (socket_select($sockets, $write, $except, NULL) > 0) {
+			if (socket_select($sockets, $write, $except, 0, 100000) > 0) {
 				foreach ($sockets as $position => $socket) {
 					if ($socket == self::$app) {
 						self::addClient($socket);
