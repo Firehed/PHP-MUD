@@ -13,7 +13,4 @@ include './app/Database.php';
 include './app/Server.php';
 include './app/User.php';
 
-register_tick_function(array('Tick','tock'));
-declare(ticks = 10); // The Loop runs pretty darn often, let's not overload things
-
 Server::start($address, $port);

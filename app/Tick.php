@@ -1,5 +1,8 @@
 <?php
 
+register_tick_function(array('Tick','tock'));
+declare(ticks = 10); // The Loop runs pretty darn often, let's not overload things
+
 class Tick {
 
 	const DAY    = 0;
