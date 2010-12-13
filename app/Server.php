@@ -69,8 +69,10 @@ class Server {
 		self::$app = socket_create(AF_INET, SOCK_STREAM, 0);
 		socket_set_option(self::$app, SOL_SOCKET, SO_REUSEADDR, 1);
 		socket_set_nonblock(self::$app);
+
 		if (!socket_bind(self::$app, $address, $port))
 			throw new Exception("Can't bind to port $port.");
+
 		socket_listen(self::$app);
 
 		self::run();

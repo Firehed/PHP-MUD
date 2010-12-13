@@ -27,12 +27,13 @@ class Client {
 		Log::info("Client connected from $this->host.");
 
 		$this->message('{bWelcome to the club!');
-		$this->message('Username:');
+		$this->message('Username: ');
 	} // function __construct
 
 	public function __get($key) {
 		if (isset($this->$key))
 			return $this->$key;
+
 		throw new Exception("Invalid property $key in Client object.");
 	} // function __get
 
@@ -69,7 +70,7 @@ class Client {
 				// Todo: detect concurrent logins
 				if ($this->user->registered) {
 					$this->state = self::State_Login;
-					$this->message('Password:');
+					$this->message('Password: ');
 				}
 				else {
 					$this->state = self::State_Registering;
@@ -79,7 +80,7 @@ class Client {
 
 			case self::State_Registering:
 				$this->user->register($input);
-				$this->message('Thanks for registering. You\'re in.');
+				$this->message("Thanks for registering. You're in.");
 				$this->state = self::State_Logged_In;
 			return;
 
@@ -94,6 +95,7 @@ class Client {
 						throw new DisconnectClientException('Too many failed login attempts.');
 
 					$this->message('Invalid password. Try again.');
+					$this->message('Password: ');
 				}
 			return;
 		}
@@ -114,7 +116,7 @@ class Client {
 	} // function message
 
 	public function prompt() {
-		$this->message("{$this->user->name}'s prompt --->");
+		$this->message("{$this->user->name}'s prompt ---> ");
 	} // function prompt
 
 	public function quit() {

@@ -16,6 +16,7 @@ class shutdown implements Action {
 	}
 
 	public static function run(Client $client, $arg) {
+		Log::info("Server shut down by {$client->user->name} from {$client->host}.");
 		Server::stop();
 	}
 }
