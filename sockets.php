@@ -1,5 +1,6 @@
 #!/usr/bin/php
 <?php
+
 include './config.php';
 include './app/Log.php';
 include './app/Exceptions.php';
@@ -16,4 +17,3 @@ register_tick_function(array('Tick','tock'));
 declare(ticks = 10); // The Loop runs pretty darn often, let's not overload things
 
 Server::start($address, $port);
-

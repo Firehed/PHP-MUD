@@ -23,27 +23,34 @@ class Tick {
 	} // function callback
 
 	public static function day() {
-		foreach (self::$cb_day as $cb)
+		foreach (self::$cb_day as $cb) {
 			call_user_func($cb);
+		}
 	} // function day
 
 	public static function hour() {
-		foreach (self::$cb_hour as $cb)
+		foreach (self::$cb_hour as $cb) {
 			call_user_func($cb);
+		}
+
 		if (self::$second % 84600 == 0)
 			Tick::day();
 	} // function hour
 
 	public static function minute() {
-		foreach (self::$cb_minute as $cb)
+		foreach (self::$cb_minute as $cb) {
 			call_user_func($cb);
+		}
+
 		if (self::$second % 3600 == 0)
 			Tick::hour();
 	} // function minute
 
 	public static function second() {
-		foreach (self::$cb_second as $cb)
+		foreach (self::$cb_second as $cb) {
 			call_user_func($cb);
+		}
+
 		if (self::$second % 60 == 0)
 			Tick::minute();
 	} // function second

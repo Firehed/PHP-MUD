@@ -47,9 +47,9 @@ class User {
 	} // function register
 
 	public function save() {
-		if (!$this->changed) {
+		if (!$this->changed)
 			return $this;
-		}
+
 		$data = serialize($this->data);
 		$name = $this->name;
 		$s = self::$db->prepare('INSERT INTO users (`username`, `data`) VALUES (?, ?) ON DUPLICATE KEY UPDATE data = VALUES(data)');

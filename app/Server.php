@@ -4,7 +4,7 @@ class Server {
 
 	private static $app;               // Application socket
 	private static $clients = array(); // Connected clients
-	private static $run = TRUE;        // Run the socket loop while true
+	private static $run     = TRUE;    // Run the socket loop while true
 
 	private static function addClient($socket) {
 		if ($new = socket_accept(self::$app)) {

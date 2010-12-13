@@ -1,6 +1,7 @@
 <?php
 
 class Client {
+
 	const State_New           = 1; // Just connected
 	const State_Login         = 2; // Needs to enter password
 	const State_Logged_In     = 3; // Logged in
@@ -9,13 +10,13 @@ class Client {
 
 	private static $count = 0; // Number of connected clients
 
-	private $failedLoginAttempts = 0; // Failed login attempts on this connection
-	private $host;                    // Socket client host (IP address, usually)
-	private $messageSent = false;     // Whether anything has been sent to the client in this loop
-	private $position;                // Position in server's client array
-	private $socket;                  // Socket resource
-	private $state;                   // Client state
-	private $user;                    // User object associated with client
+	private $failedLoginAttempts = 0;     // Failed login attempts on this connection
+	private $host;                        // Socket client host (IP address, usually)
+	private $messageSent         = false; // Whether anything has been sent to the client in this loop
+	private $position;                    // Position in server's client array
+	private $socket;                      // Socket resource
+	private $state;                       // Client state
+	private $user;                        // User object associated with client
 
 	public function __construct($socket) {
 		$this->socket = $socket;
@@ -91,12 +92,11 @@ class Client {
 				else {
 					if (++$this->failedLoginAttempts >= 3)
 						throw new DisconnectClientException('Too many failed login attempts.');
+
 					$this->message('Invalid password. Try again.');
 				}
 			return;
-
 		}
-
 	} // function handleLogin
 
 	public function message($message) {

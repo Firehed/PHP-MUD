@@ -21,61 +21,25 @@ define('COLOR_LT_WHITE',   "\033[1;37m"); // Light White
 function color($str) {
 	return preg_replace_callback('/({.)/', function($m) {
 		switch ($m[0][1]) {
-			case 'r':
-			case '1':
-				return COLOR_DK_RED;
-			case 'g':
-			case '2':
-				return COLOR_DK_GREEN;
-			case 'y':
-			case '3':
-				return COLOR_DK_YELLOW;
-			case 'b':
-			case '4':
-				return COLOR_DK_BLUE;
-			case 'm':
-			case '5':
-				return COLOR_DK_MAGENTA;
-			case 'c':
-			case '6':
-				return COLOR_DK_CYAN;
-			case 'w':
-			case '7':
-				return COLOR_DK_WHITE;
-			case 'd':
-			case '8':
-				return COLOR_DK_BLACK;
-
-			case 'R':
-			case '!':
-				return COLOR_LT_RED;
-			case 'G':
-			case '@':
-				return COLOR_LT_GREEN;
-			case 'Y':
-			case '#':
-				return COLOR_LT_YELLOW;
-			case 'B':
-			case '$':
-				return COLOR_LT_BLUE;
-			case 'M':
-			case '%':
-				return COLOR_LT_MAGENTA;
-			case 'C':
-			case '^':
-				return COLOR_LT_CYAN;
-			case 'W':
-			case '&':
-				return COLOR_LT_WHITE;
-			case 'D':
-			case '*':
-				return COLOR_LT_BLACK;
-
-			case '{':
-				return '{';
-
-			default:
-				return COLOR_RESET;
+			case 'r': case '1': return COLOR_DK_RED;
+			case 'g': case '2': return COLOR_DK_GREEN;
+			case 'y': case '3': return COLOR_DK_YELLOW;
+			case 'b': case '4': return COLOR_DK_BLUE;
+			case 'm': case '5': return COLOR_DK_MAGENTA;
+			case 'c': case '6': return COLOR_DK_CYAN;
+			case 'w': case '7': return COLOR_DK_WHITE;
+			case 'd': case '8': return COLOR_DK_BLACK;
+			case 'R': case '!': return COLOR_LT_RED;
+			case 'G': case '@': return COLOR_LT_GREEN;
+			case 'Y': case '#': return COLOR_LT_YELLOW;
+			case 'B': case '$': return COLOR_LT_BLUE;
+			case 'M': case '%': return COLOR_LT_MAGENTA;
+			case 'C': case '^': return COLOR_LT_CYAN;
+			case 'W': case '&': return COLOR_LT_WHITE;
+			case 'D': case '*': return COLOR_LT_BLACK;
+			case '{':           return '{';
+			default:            return COLOR_RESET;
 		}
 	}, $str) . COLOR_RESET;
-}
+
+} // function color

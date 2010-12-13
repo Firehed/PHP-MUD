@@ -1,6 +1,7 @@
 <?php
 
 class Database {
+
 	private static $instance;
 
 	private function __construct() {

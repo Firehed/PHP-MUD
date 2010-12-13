@@ -1,5 +1,7 @@
 <?php
+
 class Log {
+
 	public static function debug($text) {
 		if (DEBUG)
 			self::write('DBG', $text);
@@ -17,4 +19,4 @@ class Log {
 		echo date('Y-m-d H:i:s') . " [$prefix] $text\n";
 	} // function write
 
-}
+} // class Log
