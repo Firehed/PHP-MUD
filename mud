@@ -2,6 +2,7 @@
 <?php
 
 include './config.php';
+include './app/Options.php';
 include './app/Log.php';
 include './app/Exceptions.php';
 include './app/Startup.php';
@@ -13,4 +14,4 @@ include './app/Database.php';
 include './app/Server.php';
 include './app/User.php';
 
-Server::start($address, $port);
+Server::start(ADDRESS, PORT);

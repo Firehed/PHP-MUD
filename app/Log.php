@@ -15,8 +15,14 @@ class Log {
 		self::write('NFO', $text);
 	} // function info
 	
+	public function warning($text) {
+		if (VERBOSE)
+			self::write('WRN', $text);
+	} // function warning
+	
 	private static function write($prefix, $text) {
-		echo date('Y-m-d H:i:s') . " [$prefix] $text\n";
+		if (!QUIET)
+			echo date('Y-m-d H:i:s') . " [$prefix] $text\n";
 	} // function write
 
 } // class Log

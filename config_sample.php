@@ -1,6 +1,5 @@
 <?php
 
-define('DEBUG',  false);
 define('SALT',   'PUT SOME RANDOM CHARACTERS IN HERE');
 define('DBHOST', '');
 define('DBUSER', '');
