@@ -61,7 +61,6 @@ class Server {
 		}
 	} // function run
 
-
 	public static function start($address, $port) {
 		if (self::$app !== NULL)
 			throw new Exception('One server at a time!');
