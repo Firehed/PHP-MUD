@@ -65,6 +65,7 @@ class Server {
 		if (self::$app !== NULL)
 			throw new Exception('One server at a time!');
 
+		Log::info("Binding to port $port at $address.");
 		self::$app = socket_create(AF_INET, SOCK_STREAM, 0);
 		socket_set_option(self::$app, SOL_SOCKET, SO_REUSEADDR, 1);
 		socket_set_nonblock(self::$app);

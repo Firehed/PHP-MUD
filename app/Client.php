@@ -10,6 +10,7 @@ class Client {
 	private static $count = 0; // Number of connected clients
 
 	private $failedLoginAttempts = 0; // Failed login attempts on this connection
+	private $host;                    // Socket client host (IP address, usually)
 	private $messageSent = false;     // Whether anything has been sent to the client in this loop
 	private $position;                // Position in server's client array
 	private $socket;                  // Socket resource
@@ -20,6 +21,9 @@ class Client {
 		$this->socket = $socket;
 		$this->position = ++self::$count;
 		$this->state = self::State_New;
+
+		socket_getpeername($this->socket, $this->host);
+		Log::info("Client connected from $this->host.");
 
 		$this->message('{bWelcome to the club!');
 		$this->message('Username:');
@@ -35,6 +39,7 @@ class Client {
 		$this->state = self::State_Disconnecting;
 		socket_close($this->socket);
 		Server::removeClient($this);
+		Log::info("Client disconnected from $this->host.");
 	} // function disconnect
 
 	public function handleInput() {
