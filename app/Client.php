@@ -100,7 +100,7 @@ class Client {
 
 		try {
 			$sol = $this->messageSent ? "\n\r" : '';
-			socket_write($this->socket, $sol . color($message) . COLOR_RESET . ' ');
+			socket_write($this->socket, $sol . color($message));
 			$this->messageSent = true;
 		}
 		catch (SocketException $e) {

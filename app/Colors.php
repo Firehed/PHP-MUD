@@ -77,5 +77,5 @@ function color($str) {
 			default:
 				return COLOR_RESET;
 		}
-	}, $str);
+	}, $str) . COLOR_RESET;
 }
