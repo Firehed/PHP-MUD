@@ -1,6 +1,7 @@
 #!/usr/bin/php
 <?php
 include './config.php';
+include './app/Log.php';
 include './app/Exceptions.php';
 include './app/Startup.php';
 include './app/Tick.php';
