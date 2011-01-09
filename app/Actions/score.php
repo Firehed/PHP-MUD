@@ -1,4 +1,5 @@
 <?php
+
 class score implements Action {
 	public static function ok(Client $client) {
 		return true;
