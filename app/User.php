@@ -1,19 +1,11 @@
 <?php
 
-class User {
+class User extends ORM {
 
-	private static $db; // Shared database connection
+	protected static $PK    = 'username';
+	protected static $table = 'users';
 
-	private $changed = FALSE;         // Have any properties changed?
-	private $data;                    // Generic key/value store for data
-
-	public function __construct($username) {
-		self::$db === NULL && self::$db = Database::instance(); // Init DB
-
-		$s = self::$db->prepare('SELECT data FROM users WHERE username = ?');
-		$s->bind_param('s', $username);
-		$s->execute();
-		$s->store_result();
+	protected function  _load($PK, MySQLI_Stmt $s) {
 		if ($s->num_rows) {
 			$s->bind_result($data);
 			$s->fetch();
@@ -21,20 +13,10 @@ class User {
 		}
 		else {
 			$this->data = new StdClass;
-			$this->name = $username;
+			$this->name = $PK;
 			$this->registered = FALSE;
 		}
-		$s->close();
-	} // function __construct
-
-	public function __get($key) {
-		return $this->data->$key;
-	} // function __get
-
-	public function __set($key, $value) {
-		$this->data->$key = $value;
-		$this->changed = TRUE;
-	} // function __set
+	} // function _load
 
 	public function login($password) {
 		return sha1($password.SALT) === $this->password;
