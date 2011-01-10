@@ -19,7 +19,7 @@ class User extends ORM {
 	} // function _load
 
 	public function login($password) {
-		return sha1($password.$this->salt) === $this->password;
+		return crypt($password, $this->salt) === $this->password;
 	} // function login
 
 	public function register($password) {
@@ -29,8 +29,8 @@ class User extends ORM {
 			shuffle($letters);
 			$salt .= current($letters);
 		}
-		$this->salt     = $salt;//22 chars
-		$this->password = crypt($password, '$2a$07$' . $this->salt);
+		$this->salt     = '$2a$07$' . $salt;
+		$this->password = crypt($password, $this->salt);
 		$this->registered = TRUE;
 		return $this->save();
 	} // function register
