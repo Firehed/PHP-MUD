@@ -5,9 +5,9 @@ class User extends ORM {
 	protected static $PK    = 'username';
 	protected static $table = 'users';
 
-	protected function  _load($PK, MySQLI_Stmt $s) {
+	protected function _load($PK, MySQLI_Stmt $s) {
 		if ($s->num_rows) {
-			$s->bind_result($data);
+			$s->bind_result($username, $data);
 			$s->fetch();
 			$this->data = unserialize($data);
 		}
@@ -19,11 +19,18 @@ class User extends ORM {
 	} // function _load
 
 	public function login($password) {
-		return sha1($password.SALT) === $this->password;
+		return sha1($password.$this->salt) === $this->password;
 	} // function login
 
 	public function register($password) {
-		$this->password = sha1($password.SALT);
+		$letters = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9','.','/');
+		$salt = '';
+		for ($i = 0; $i < 22; $i++) {
+			shuffle($letters);
+			$salt .= current($letters);
+		}
+		$this->salt     = $salt;//22 chars
+		$this->password = crypt($password, '$2a$07$' . $this->salt);
 		$this->registered = TRUE;
 		return $this->save();
 	} // function register
