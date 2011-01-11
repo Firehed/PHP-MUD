@@ -10,6 +10,7 @@ class Client {
 
 	private static $count = 0; // Number of connected clients
 
+	private $echo                = true;  // Keep track of telnet echo status
 	private $failedLoginAttempts = 0;     // Failed login attempts on this connection
 	private $host;                        // Socket client host (IP address, usually)
 	private $messageSent         = false; // Whether anything has been sent to the client in this loop
@@ -44,10 +45,26 @@ class Client {
 		Log::info("Client disconnected from $this->host.");
 	} // function disconnect
 
+	public function echoOff() {
+		if ($this->echo) {
+			$this->send(chr(255).chr(251).chr(1));
+			$this->echo = false;
+		}
+	} // function echoOff
+
+	public function echoOn() {
+		if (!$this->echo) {
+			$this->send(chr(255).chr(252).chr(1));
+			$this->echo = true;
+		}
+	} // function echoOn
+
 	public function handleInput() {
 		$this->messageSent = false;
 		try {
 			$input = trim(socket_read($this->socket, 1024));
+			if ($input[0] == chr(255)) // Ignore Telnet IAC commands, they should not be parsed!
+				return;
 		}
 		catch (SocketException $e) {
 			$this->disconnect();
@@ -71,21 +88,25 @@ class Client {
 				if ($this->user->registered) {
 					$this->state = self::State_Login;
 					$this->message('Password: ');
+					$this->echoOff();
 				}
 				else {
 					$this->state = self::State_Registering;
 					$this->message("Welcome, {$this->user->name}. Please set a password.");
+					$this->echoOff();
 				}
 			return;
 
 			case self::State_Registering:
 				$this->user->register($input);
+				$this->echoOn();
 				$this->message("Thanks for registering. You're in.");
 				$this->state = self::State_Logged_In;
 			return;
 
 			case self::State_Login:
 				if ($this->user->login($input)) {
+					$this->echoOn();
 					$this->message('Login successful!');
 					$this->state = self::State_Logged_In;
 					$this->prompt();
@@ -105,14 +126,9 @@ class Client {
 		if ($this->state == self::State_Disconnecting)
 			return;
 
-		try {
-			$sol = $this->messageSent ? "\n\r" : '';
-			socket_write($this->socket, $sol . color($message));
-			$this->messageSent = true;
-		}
-		catch (SocketException $e) {
-			$this->disconnect();
-		}
+		$sol = ($this->messageSent || !$this->echo) ? "\n\r" : '';
+		$this->send($sol . color($message));
+		$this->messageSent = true;
 	} // function message
 
 	public function prompt() {
@@ -123,5 +139,14 @@ class Client {
 		$this->message('{r** DISCONNECTING **');
 		$this->disconnect();
 	} // function quit
+	
+	private function send($message) {
+		try {
+			socket_write($this->socket, $message);
+		}
+		catch (SocketException $e) {
+			$this->disconnect();
+		}
+	} // function send
 
 } // class Client
