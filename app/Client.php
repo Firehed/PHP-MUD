@@ -63,7 +63,7 @@ class Client {
 		$this->messageSent = false;
 		try {
 			$input = trim(socket_read($this->socket, 1024));
-			if ($input[0] == chr(255)) // Ignore Telnet IAC commands, they should not be parsed!
+			if (substr($input,0,1) == chr(255)) // Ignore Telnet IAC commands, they should not be parsed!
 				return;
 		}
 		catch (SocketException $e) {
