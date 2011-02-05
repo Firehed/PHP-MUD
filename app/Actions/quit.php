@@ -6,7 +6,7 @@ class quit implements Action {
 		return true;
 	} // function ok
 
-	public static function run(Client $client, $arg) {
+	public static function run(Client $client, $cmd, $arg) {
 		$client->quit();
 	} // function run
 

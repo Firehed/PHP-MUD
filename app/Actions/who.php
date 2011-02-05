@@ -6,7 +6,7 @@ class who implements Action {
 		return true;
 	} // function ok
 
-	public static function run(Client $client, $input) {
+	public static function run(Client $client, $cmd, $arg) {
 		foreach (Server::getClients() as $c) {
 			$client->message('[some info...] ' . $c->user->name);
 		}

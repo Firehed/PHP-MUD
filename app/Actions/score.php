@@ -6,7 +6,7 @@ class score implements Action {
 		return true;
 	} // function ok
 
-	public static function run(Client $client, $args) {
+	public static function run(Client $client, $cmd, $arg) {
 		$client->message(<<<FOO
 {R                                          ________________{0
 {R ________________________________________/{xlord{xfirehed{x
