@@ -1,6 +1,7 @@
 <?php
 
 class score implements Action {
+
 	public static function ok(Client $client) {
 		return true;
 	} // function ok
@@ -34,4 +35,5 @@ class score implements Action {
 FOO
 );
 	} // function run
+
 } // class score

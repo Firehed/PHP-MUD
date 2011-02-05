@@ -1,6 +1,7 @@
 <?php
 
 class who implements Action {
+
 	public static function ok(Client $client) {
 		return true;
 	} // function ok
@@ -10,4 +11,5 @@ class who implements Action {
 			$client->message('[some info...] ' . $c->user->name);
 		}
 	} // function run
-}
+
+} // class who

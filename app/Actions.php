@@ -25,9 +25,9 @@ class Actions {
 		self::$actions = include './app/Actions/List';
 	} // function register
 
-} // class Action
+} // class Actions
 
 interface Action {
 	public static function ok(Client $client);
 	public static function run(Client $client, $arg);
-}
+} // interface Action
