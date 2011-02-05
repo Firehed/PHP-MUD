@@ -1,13 +1,17 @@
 <?
-include './app/Actions/shutdown.php';
-include './app/Actions/quit.php';
-include './app/Actions/who.php';
-include './app/Actions/score.php';
-include './app/Actions/reload.php';
-
 return array(
-	'score',
-	'who',
-	'shutdown',
-	'quit',
+	'files' => array(
+		'./app/Actions/shutdown.php',
+		'./app/Actions/quit.php',
+		'./app/Actions/who.php',
+		'./app/Actions/score.php',
+		'./app/Actions/reload.php',
+	),
+	'actions' => array(
+		'score',
+		'who',
+		'shutdown',
+		'quit',
+		'reload',
+	),
 );

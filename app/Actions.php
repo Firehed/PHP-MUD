@@ -21,7 +21,12 @@ class Actions {
 	} // function perform
 
 	public static function register() {
-		self::$actions = include './app/Actions/List';
+		$list = include './app/Actions/List';
+		foreach ($list['files'] as $file) {
+			include $file;
+		}
+		self::$actions = $list['actions'];
+		//self::$actions = include './app/Actions/List';
 	} // function register
 
 } // class Actions
