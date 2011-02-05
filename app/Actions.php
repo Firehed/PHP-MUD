@@ -13,7 +13,7 @@ class Actions {
 		foreach (self::$actions as $action) {
 			if (0 === strpos($action, $cmd) && $action::ok($client)) {
 				$arg = trim(strstr($input, ' '));
-				$action::run($client, $input, $arg);
+				$action::run($client, $cmd, $arg);
 				return;
 			}
 		}
