@@ -36,7 +36,7 @@ class Tick {
 			call_user_func($cb);
 		}
 
-		if (self::$second % 84600 == 0)
+		if (self::$second % 86400 == 0)
 			Tick::day();
 	} // function hour
 
