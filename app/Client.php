@@ -24,13 +24,13 @@ class Client {
 		return $this->server;
 	}
 
-	public function __construct($socket, Server $server) {
+	public function __construct(SocketClient $socket, Server $server) {
 		$this->server = $server;
 		$this->socket = $socket;
 		$this->position = ++self::$count;
 		$this->state = self::State_New;
 
-		socket_getpeername($this->socket, $this->host);
+		$this->host = $this->socket->getAddress();
 		Log::info("Client connected from $this->host.");
 
 		$this->message('{bWelcome to the club!');
@@ -46,7 +46,7 @@ class Client {
 
 	public function disconnect() {
 		$this->state = self::State_Disconnecting;
-		socket_close($this->socket);
+		$this->socket->close();
 		$this->server->removeClient($this);
 		Log::info("Client disconnected from $this->host.");
 	} // function disconnect
@@ -68,7 +68,7 @@ class Client {
 	public function handleInput() {
 		$this->messageSent = false;
 		try {
-			$input = trim(socket_read($this->socket, 1024));
+			$input = trim($this->socket->read());
 			if (substr($input,0,1) == chr(255)) // Ignore Telnet IAC commands, they should not be parsed!
 				return;
 		}
@@ -148,7 +148,7 @@ class Client {
 	
 	private function send($message) {
 		try {
-			socket_write($this->socket, $message);
+			$this->socket->write($message);
 		}
 		catch (SocketException $e) {
 			$this->disconnect();

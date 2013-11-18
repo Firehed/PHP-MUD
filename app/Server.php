@@ -6,14 +6,16 @@ class Server {
 	private $port;
 	private $socket; // Bound socket
 
+	private $allSockets = [];
 
 	private $clients = array(); // Connected clients
 	private $run     = TRUE;    // Run the socket loop while true
 
 	private function addClient($socket) {
 		if ($new = socket_accept($this->socket)) {
-			$c = new Client($new, $this);
+			$c = new Client(new SocketClient($new), $this);
 			$this->clients[$c->position] = $c;
+			$this->allSockets[$c->position] = $new;
 		}
 	} // function addClient
 
@@ -21,12 +23,12 @@ class Server {
 		return $this->clients;
 	} // function getClients
 
+	/**
+	 * @return array of all socket resources: main server in index 0, all
+	 * clients in other indexes
+	 */
 	private function getSockets() {
-		$sockets[0] = $this->socket;
-		foreach ($this->clients as $client) {
-			$sockets[$client->position] = $client->socket;
-		}
-		return $sockets;
+		return $this->allSockets;
 	} // function getSockets
 
 	public function messageAll($message) {
@@ -37,6 +39,7 @@ class Server {
 
 	public function removeClient(Client $c) {
 		unset($this->clients[$c->position]);
+		unset($this->allSockets[$c->position]);
 	} // function removeClient
 
 	private function run() {
@@ -90,6 +93,8 @@ class Server {
 			throw new Exception("Can't bind to port $port.");
 
 		socket_listen($this->socket);
+
+		$this->allSockets[0] = $this->socket;
 
 		$this->run();
 	} // function start
