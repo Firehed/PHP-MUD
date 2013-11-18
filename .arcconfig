@@ -1,0 +1,5 @@
+{ "project_id": "firehed/mud"
+, "conduit_uri": "https://phabricator.ericstern.com/"
+, "unit.engine": "PhpunitTestEngine"
+, "unit.phpunit.binary": "vendor/bin/phpunit"
+}
