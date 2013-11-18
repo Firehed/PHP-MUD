@@ -15,4 +15,8 @@ include './app/Server.php';
 include './app/ORM.php';
 include './app/User.php';
 
-Server::start(ADDRESS, PORT);
+(new Server)
+	->setAddress(ADDRESS)
+	->setPort(PORT)
+	->start();
+

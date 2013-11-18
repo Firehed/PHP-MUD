@@ -2,51 +2,55 @@
 
 class Server {
 
-	private static $app;               // Application socket
-	private static $clients = array(); // Connected clients
-	private static $run     = TRUE;    // Run the socket loop while true
+	private $address;
+	private $port;
+	private $socket; // Bound socket
 
-	private static function addClient($socket) {
-		if ($new = socket_accept(self::$app)) {
-			$c = new Client($new);
-			self::$clients[$c->position] = $c;
+
+	private $clients = array(); // Connected clients
+	private $run     = TRUE;    // Run the socket loop while true
+
+	private function addClient($socket) {
+		if ($new = socket_accept($this->socket)) {
+			$c = new Client($new, $this);
+			$this->clients[$c->position] = $c;
 		}
 	} // function addClient
 
-	public static function getClients() {
-		return self::$clients;
+	public function getClients() {
+		return $this->clients;
 	} // function getClients
 
-	private static function getSockets() {
-		$sockets[0] = self::$app;
-		foreach (self::$clients as $client) {
+	private function getSockets() {
+		$sockets[0] = $this->socket;
+		foreach ($this->clients as $client) {
 			$sockets[$client->position] = $client->socket;
 		}
 		return $sockets;
 	} // function getSockets
 
-	public static function messageAll($message) {
-		foreach (self::$clients as $client) {
+	public function messageAll($message) {
+		foreach ($this->clients as $client) {
 			$client->message($message);
 		}
 	} // function messageAll
 
-	public static function removeClient(Client $c) {
-		unset(self::$clients[$c->position]);
+	public function removeClient(Client $c) {
+		unset($this->clients[$c->position]);
 	} // function removeClient
 
-	private static function run() {
+	private function run() {
 		Actions::register();
 		$write = $except = null;
-		while (self::$run) {
-			$sockets = self::getSockets();
+		while ($this->run) {
+			$sockets = $this->getSockets();
 			if (socket_select($sockets, $write, $except, 0, 100000) > 0) {
 				foreach ($sockets as $position => $socket) {
-					if ($socket == self::$app) {
-						self::addClient($socket);
+					if ($socket == $this->socket) {
+						$this->addClient($socket);
 					}
 					else {
-						$client = self::$clients[$position];
+						$client = $this->clients[$position];
 						try {
 							$client->handleInput();
 						}
@@ -61,30 +65,42 @@ class Server {
 		}
 	} // function run
 
-	public static function start($address, $port) {
-		if (self::$app !== NULL)
+	public function setAddress($address) {
+		$this->address = $address;
+		return $this;
+	}
+
+	public function setPort($port) {
+		$this->port = $port;
+		return $this;
+	}
+
+	public function start() {
+		if ($this->socket !== NULL)
 			throw new Exception('One server at a time!');
 
+		$address = $this->address;
+		$port = $this->port;
 		Log::info("Binding to port $port at $address.");
-		self::$app = socket_create(AF_INET, SOCK_STREAM, 0);
-		socket_set_option(self::$app, SOL_SOCKET, SO_REUSEADDR, 1);
-		socket_set_nonblock(self::$app);
+		$this->socket = socket_create(AF_INET, SOCK_STREAM, 0);
+		socket_set_option($this->socket, SOL_SOCKET, SO_REUSEADDR, 1);
+		socket_set_nonblock($this->socket);
 
-		if (!socket_bind(self::$app, $address, $port))
+		if (!socket_bind($this->socket, $address, $port))
 			throw new Exception("Can't bind to port $port.");
 
-		socket_listen(self::$app);
+		socket_listen($this->socket);
 
-		self::run();
+		$this->run();
 	} // function start
 
-	public static function stop() {
-		self::messageAll('{g*** The server is shutting down now. ***');
-		foreach (self::$clients as $client) {
+	public function stop() {
+		$this->messageAll('{g*** The server is shutting down now. ***');
+		foreach ($this->clients as $client) {
 			$client->disconnect();
 		}
-		socket_close(self::$app);
-		self::$run = FALSE;
+		socket_close($this->socket);
+		$this->run = FALSE;
 		Database::instance()->close();
 	} // function stop
 

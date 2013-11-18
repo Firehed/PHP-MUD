@@ -12,7 +12,7 @@ class shutdown implements Action {
 			return;
 		}
 		Log::info("Server shut down by {$client->user->name} from {$client->host}.");
-		Server::stop();
+		$client->getServer()->stop();
 	} // function run
 
 } // class shutdown

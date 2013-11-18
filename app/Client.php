@@ -19,7 +19,13 @@ class Client {
 	private $state;                       // Client state
 	private $user;                        // User object associated with client
 
-	public function __construct($socket) {
+	private $server;
+	public function getServer() {
+		return $this->server;
+	}
+
+	public function __construct($socket, Server $server) {
+		$this->server = $server;
 		$this->socket = $socket;
 		$this->position = ++self::$count;
 		$this->state = self::State_New;
@@ -41,7 +47,7 @@ class Client {
 	public function disconnect() {
 		$this->state = self::State_Disconnecting;
 		socket_close($this->socket);
-		Server::removeClient($this);
+		$this->server->removeClient($this);
 		Log::info("Client disconnected from $this->host.");
 	} // function disconnect
 
