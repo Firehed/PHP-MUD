@@ -47,7 +47,7 @@ class Client {
 	public function disconnect() {
 		$this->state = self::State_Disconnecting;
 		$this->socket->close();
-		$this->server->removeClient($this);
+		//$this->server->removeClient($this);
 		Log::info("Client disconnected from $this->host.");
 	} // function disconnect
 
@@ -65,18 +65,8 @@ class Client {
 		}
 	} // function echoOn
 
-	public function handleInput() {
+	public function handleInput($input) {
 		$this->messageSent = false;
-		try {
-			$input = trim($this->socket->read());
-			if (substr($input,0,1) == chr(255)) // Ignore Telnet IAC commands, they should not be parsed!
-				return;
-		}
-		catch (SocketException $e) {
-			$this->disconnect();
-			return;
-		}
-
 		if (self::State_Logged_In != $this->state) {
 			$this->handleLogin($input);
 			return;

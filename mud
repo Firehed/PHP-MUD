@@ -12,6 +12,7 @@ include './app/Actions.php';
 include './app/Client.php';
 include './app/Database.php';
 include './app/SocketClient.php';
+include './app/SocketServer.php';
 include './app/Server.php';
 include './app/ORM.php';
 include './app/User.php';
