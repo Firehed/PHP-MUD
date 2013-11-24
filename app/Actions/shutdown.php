@@ -11,7 +11,7 @@ class shutdown implements Action {
 			$client->message('You need to spell out the entire SHUTDOWN command to shut down the server.');
 			return;
 		}
-		Log::info("Server shut down by {$client->user->name} from {$client->host}.");
+		Log::info("Server shut down by {$client->user->name}");
 		$client->getServer()->stop();
 	} // function run
 

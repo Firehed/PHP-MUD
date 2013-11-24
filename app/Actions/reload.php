@@ -19,7 +19,7 @@ class reload implements Action {
 			$client->message('The server must have the {1Reflection{0 extesion installed.');
 			return;
 		}
-		Log::info("Reload performed by {$client->user->name} from {$client->host}.");
+		Log::info("Reload performed by {$client->user->name}.");
 		$list = include './app/Actions/List';
 		foreach ($list['files'] as $file) {
 			try {

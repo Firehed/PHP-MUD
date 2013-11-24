@@ -7,15 +7,15 @@ class Client {
 	const State_Logged_In     = 3; // Logged in
 	const State_Registering   = 4; // In the registration process
 	const State_Disconnecting = 5;
+	const State_Disconnected  = 6;
 
 	private static $count = 0; // Number of connected clients
 
+	private $id;
 	private $echo                = true;  // Keep track of telnet echo status
 	private $failedLoginAttempts = 0;     // Failed login attempts on this connection
-	private $host;                        // Socket client host (IP address, usually)
 	private $messageSent         = false; // Whether anything has been sent to the client in this loop
 	private $position;                    // Position in server's client array
-	private $socket;                      // Socket resource
 	private $state;                       // Client state
 	private $user;                        // User object associated with client
 
@@ -24,16 +24,16 @@ class Client {
 		return $this->server;
 	}
 
-	public function __construct(SocketClient $socket, Server $server) {
+	public function __construct(Server $server) {
+		$this->id = md5(spl_object_hash($this));
 		$this->server = $server;
-		$this->socket = $socket;
 		$this->position = ++self::$count;
 		$this->state = self::State_New;
-
-		$this->host = $this->socket->getAddress();
-		Log::info("Client connected from $this->host.");
-
 	} // function __construct
+
+	public function getId() {
+		return $this->id;
+	}
 
 	public function __get($key) {
 		if (isset($this->$key))
@@ -42,11 +42,23 @@ class Client {
 		throw new Exception("Invalid property $key in Client object.");
 	} // function __get
 
+	public function connectionIsGone() {
+		$this->state = self::State_Disconnected;
+	}
+
 	public function disconnect() {
+		// Ignore duplicate calls
+		if (self::State_Disconnecting === $this->state) {
+			return;
+		}
+		if (self::State_Disconnected === $this->state) {
+			// weird, but log and ignore gracefully
+			Log::info("Client was told to disconnect after already disconnected ".$this->getId());
+			return;
+		}
+
 		$this->state = self::State_Disconnecting;
-		$this->socket->close();
-		//$this->server->removeClient($this);
-		Log::info("Client disconnected from $this->host.");
+		$this->server->disconnectClient($this);
 	} // function disconnect
 
 	public function echoOff() {
@@ -117,7 +129,8 @@ class Client {
 	} // function handleLogin
 
 	public function message($message) {
-		if ($this->state == self::State_Disconnecting)
+		if ($this->state == self::State_Disconnecting ||
+		$this->state == self::State_Disconnected)
 			return;
 
 		$sol = ($this->messageSent || !$this->echo) ? "\n\r" : '';
@@ -134,13 +147,9 @@ class Client {
 		$this->disconnect();
 	} // function quit
 	
+	// Send string with no additional formatting (CRLF, etc)
 	private function send($message) {
-		try {
-			$this->socket->write($message);
-		}
-		catch (SocketException $e) {
-			$this->disconnect();
-		}
+		$this->server->sendMessageToClient($message, $this);
 	} // function send
 
 } // class Client

@@ -7,20 +7,48 @@ class Server implements SocketServerDelegate {
 
 	private $socketServer;
 
+	private $clientMap = []; // Client -> SocketClient
+	private $socketMap = []; // SocketClient -> Client
 	private $clients = array(); // Connected clients
+	private $socketClients = [];
 	private $run     = TRUE;    // Run the socket loop while true
 
 	public function clientConnected(SocketClient $sc) {
-		Log::info("New client connected: ".$sc->getId());
-		$c = new Client($sc, $this);
-		$this->clients[$sc->getId()] = $c;
+		$host = $sc->getAddress();
+		Log::info("New client ".$sc->getId()." connected from host: ".$host);
+		$c = new Client($this);
+		$this->socketClients[$sc->getId()] = $sc;
+		$this->clients[$c->getId()] = $c;
+
+		$this->clientMap[$c->getId()] = $sc->getId();
+		$this->socketMap[$sc->getId()] = $c->getId();
 		$c->message('{bWelcome to the club!');
 		$c->message('Username: ');
 	}
 
+	private function getSocketClientForClient(Client $c) {
+		$scId = $this->clientMap[$c->getId()];
+		return $this->socketClients[$scId];
+	}
+
+	private function getClientForSocketClient(SocketClient $sc) {
+		$cId = $this->socketMap[$sc->getId()];
+		return $this->clients[$cId];
+	}
+
+
+	// Already happened, no request.
 	public function clientDisconnected(SocketClient $sc) {
-		Log::info("Client disconnected: ".$sc->getId());
-		unset($this->clients[$sc->getId()]);
+		// If client isn't already gone, kill it
+		if (isset($this->socketClients[$sc->getId()])) {
+			Log::info("Client disconnected: ".$sc->getId());
+			$client = $this->getClientForSocketClient($sc);
+			unset($this->socketClients[$sc->getId()]);
+			unset($this->clientMap[$client->getId()]);
+			unset($this->socketMap[$sc->getId()]);
+			unset($this->clients[$client->getId()]);
+			$client->connectionIsGone();
+		}
 	}
 
 	public function clientSentMessage(SocketClient $sc, $message) {
@@ -85,5 +113,22 @@ class Server implements SocketServerDelegate {
 		$this->run = FALSE;
 		Database::instance()->close();
 	} // function stop
+
+	public function disconnectClient(Client $client) {
+		$socketClient = $this->getSocketClientForClient($client);
+		$socketClient->close();
+	}
+
+	public function sendMessageToClient($message, Client $client) {
+		try {
+			$socketClient = $this->getSocketClientForClient($client);
+			$socketClient->write($message);
+		}
+		catch (SocketException $e) {
+			Log::info("Caught socket exception writing to Client ".$client->getId());
+			$client->disconnect();
+		}
+	}
+
 
 } // class Server
