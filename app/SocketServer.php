@@ -80,6 +80,7 @@ class SocketServer implements SocketClientDelegate {
 	}
 
 	public function start($address, $port) {
+		if ($this->domain == AF_UNIX && file_exists($address)) @unlink($address);
 		$this->address = $address;
 		$this->port = $port;
 		$socket = socket_create($this->domain, $this->type, 0);
