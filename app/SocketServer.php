@@ -103,6 +103,10 @@ class SocketServer implements SocketClientDelegate {
 		if (!$this->started) {
 			return;
 		}
+		foreach ($this->clients as $socketClient) {
+			$socketClient->close();
+		}
+
 		// Clean up all clients first?
 		socket_close($this->socket);
 		if (AF_UNIX == $this->domain) {
