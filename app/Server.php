@@ -14,6 +14,8 @@ class Server implements SocketServerDelegate {
 		Log::info("New client connected: ".$sc->getId());
 		$c = new Client($sc, $this);
 		$this->clients[$sc->getId()] = $c;
+		$c->message('{bWelcome to the club!');
+		$c->message('Username: ');
 	}
 
 	public function clientDisconnected(SocketClient $sc) {

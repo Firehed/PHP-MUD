@@ -33,8 +33,6 @@ class Client {
 		$this->host = $this->socket->getAddress();
 		Log::info("Client connected from $this->host.");
 
-		$this->message('{bWelcome to the club!');
-		$this->message('Username: ');
 	} // function __construct
 
 	public function __get($key) {
